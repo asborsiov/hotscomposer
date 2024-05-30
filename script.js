@@ -149,8 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const heroCard = document.createElement('div');
         heroCard.classList.add('hero-card');
         heroCard.innerHTML = `
+            <div class="loader"></div>
             <img src="images/heroes/${heroData.icon}" alt="${heroData.name}" title="${heroData.name}">
         `;
+        const img = heroCard.querySelector('img');
+        img.addEventListener('load', () => {
+            heroCard.querySelector('.loader').style.display = 'none';
+            img.style.display = 'block';
+        });
         heroCard.addEventListener('click', () => loadHeroDetails(heroData));
         return heroCard;
     };
