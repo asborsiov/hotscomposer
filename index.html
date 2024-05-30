@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heroes Talent Chain Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Heroes Talent Chain Builder</h1>
+    </header>
+    <main id="main-content">
+        <section id="skill-chain-section">
+            <div id="skill-chain">
+                <div id="skill-chain-constructor"></div>
+                <div id="filters">
+                    <fieldset>
+                        <legend>Ability Filter</legend>
+                        <label><input type="radio" name="ability-filter" value="all" checked> All</label>
+                        <label><input type="radio" name="ability-filter" value="stun"> Stun</label>
+                        <label><input type="radio" name="ability-filter" value="displace"> Displace</label>
+                        <label><input type="radio" name="ability-filter" value="silence"> Silence</label>
+                        <label><input type="radio" name="ability-filter" value="slow"> Slow</label>
+                        <label><input type="radio" name="ability-filter" value="root"> Root</label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Cooldown Filter</legend>
+                        <label><input type="radio" name="cooldown-filter" value="all" checked> All</label>
+                        <label><input type="radio" name="cooldown-filter" value="10"> &le; 10s</label>
+                        <label><input type="radio" name="cooldown-filter" value="16"> 10s - 16s</label>
+                        <label><input type="radio" name="cooldown-filter" value="more-than-16"> &gt; 16s</label>
+                    </fieldset>
+                </div>
+                <button id="save-chain">Save Chain</button>
+            </div>
+        </section>
+        <div class="panels-container">
+            <section id="hero-list-section">
+                <div id="hero-list"></div>
+            </section>
+            <section id="talents-panel">
+                <h2 id="hero-name"></h2>
+                <div id="abilities"></div>
+            </section>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
