@@ -125,9 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const heroData = await response.json();
                 if (heroData.name === 'Jaina') {
                     for (const abilitySet in heroData.abilities) {
+                        heroData.abilities[abilitySet] = heroData.abilities[abilitySet].filter(ability => !excludedAbilities.includes(ability.name));
                         heroData.abilities[abilitySet].forEach(ability => {
                             ability.description += ' Slows by 4 sec.';
                         });
+                    }
+                } else {
+                    for (const abilitySet in heroData.abilities) {
+                        heroData.abilities[abilitySet] = heroData.abilities[abilitySet].filter(ability => !excludedAbilities.includes(ability.name));
                     }
                 }
                 const heroCard = createHeroCard(heroData);
@@ -154,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         abilitiesDiv.innerHTML = '';
         for (const abilitySet in heroData.abilities) {
             heroData.abilities[abilitySet].forEach(ability => {
-                if (excludedAbilities.includes(ability.name)) return;
                 if (shouldShowAbility(ability)) {
                     const abilityCard = createAbilityCard(ability);
                     abilitiesDiv.appendChild(abilityCard);
@@ -182,16 +186,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${slowDuration ? `<span class="duration slow-duration">Slow: ${slowDuration} sec</span>` : ''}
                 ${rootDuration ? `<span class="duration root-duration">Root: ${rootDuration} sec</span>` : ''}
             </div>
-            <button class="add-skill">+</button>
         `;
         abilityCard.dataset.stunDuration = stunDuration || 0;
         abilityCard.dataset.silenceDuration = silenceDuration || 0;
         abilityCard.dataset.slowDuration = slowDuration || 0;
         abilityCard.dataset.rootDuration = rootDuration || 0;
-        abilityCard.querySelector('.add-skill').addEventListener('click', () => {
+        abilityCard.addEventListener('click', () => {
             addAbilityToChain(ability);
         });
         return abilityCard;
+    };
+
+    const getStunDuration = (description) => {
+        const stunMatch = description.match(/stun.*?(\d+(\.\d+)?)\s*sec/i);
+        return stunMatch ? parseFloat(stunMatch[1]) : null;
+    };
+
+    const getSilenceDuration = (description) => {
+        const silenceMatch = description.match(/(silence|silencing).*?(\d+(\.\d+)?)\s*sec/i);
+        return silenceMatch ? parseFloat(silenceMatch[2]) : null;
+    };
+
+    const getSlowDuration = (description) => {
+        const slowMatch = description.match(/(slow|slowed|slowing|slows).*?(\d+(\.\d+)?)\s*sec/i);
+        return slowMatch ? parseFloat(slowMatch[2]) : null;
+    };
+
+    const getRootDuration = (description) => {
+        const rootMatch = description.match(/(root|draws).*?(\d+(\.\d+)?)\s*sec/i);
+        return rootMatch ? parseFloat(rootMatch[2]) : null;
     };
 
     const shouldShowAbility = (ability) => {
@@ -199,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cooldownFilter = document.querySelector('input[name="cooldown-filter"]:checked').value;
         const desc = ability.description.toLowerCase();
 
-        if (abilityFilter === 'stun' && (!(desc.includes('stun') && desc.includes('sec')) || excludedAbilities.includes(ability.name))) {
+        if (abilityFilter === 'stun' && (!(desc.includes('stun') && desc.includes('sec')))) {
             return false;
         }
         if (abilityFilter === 'displace' && !(desc.includes('pull') || desc.includes('knock') || desc.includes('knocked') || desc.includes('knocking') || desc.includes('pulled'))) {
@@ -225,26 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
         return true;
-    };
-
-    const getStunDuration = (description) => {
-        const stunMatch = description.match(/stun.*?(\d+(\.\d+)?)\s*sec/i);
-        return stunMatch ? parseFloat(stunMatch[1]) : null;
-    };
-
-    const getSilenceDuration = (description) => {
-        const silenceMatch = description.match(/(silence|silencing).*?(\d+(\.\d+)?)\s*sec/i);
-        return silenceMatch ? parseFloat(silenceMatch[2]) : null;
-    };
-
-    const getSlowDuration = (description) => {
-        const slowMatch = description.match(/(slow|slowed|slowing|slows).*?(\d+(\.\d+)?)\s*sec/i);
-        return slowMatch ? parseFloat(slowMatch[2]) : null;
-    };
-
-    const getRootDuration = (description) => {
-        const rootMatch = description.match(/(root|draws).*?(\d+(\.\d+)?)\s*sec/i);
-        return rootMatch ? parseFloat(rootMatch[2]) : null;
     };
 
     const filterHeroes = () => {
