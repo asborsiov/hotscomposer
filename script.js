@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalStunDurationElement = document.createElement('p');
     const totalSilenceDurationElement = document.createElement('p');
     const totalRootDurationElement = document.createElement('p');
+    const heroSearch = document.getElementById('hero-search');
 
     totalStunDurationElement.id = 'total-stun-duration';
     totalSilenceDurationElement.id = 'total-silence-duration';
@@ -251,12 +252,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const filterHeroes = () => {
+        const searchTerm = heroSearch.value.toLowerCase();
         document.querySelectorAll('.hero-card').forEach(heroCard => {
             const heroData = JSON.parse(heroCard.dataset.heroData);
             const hasFilteredAbility = Object.values(heroData.abilities).some(abilitySet => 
                 abilitySet.some(ability => shouldShowAbility(ability))
             );
-            heroCard.style.display = hasFilteredAbility ? 'block' : 'none';
+            const matchesSearch = heroData.name.toLowerCase().includes(searchTerm);
+            heroCard.style.display = hasFilteredAbility && matchesSearch ? 'block' : 'none';
         });
     };
 
@@ -393,6 +396,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    heroSearch.addEventListener('input', filterHeroes);
 
     loadHeroes();
     loadSkillChainFromUrl();
